@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="section">
+        <div class="container">
+            <div class="column is-centered">
+                <div class="column is-one-third">
+                    <form action="" method="post" class="box">
+                        <h1 class="title">Registrati</h1>
+                        {{ form.hidden_tag() }}
+                        <p>
+                            {{ form.username.label(class="label") }}
+                            {{ form.username(class="input is-warning") }}
+                            {% for error in form.username.errors %}
+                            <span style="color:brown">[{{ error }}]</span>
+                            {% endfor %}
+                            <br><br>
+                        </p>
+
+                        <p>
+                            {{ form.password.label(class="label") }}
+                            {{ form.password(class="input is-warning") }}
+                            {% for error in form.password.errors %}
+                            <span style="color:brown">[{{ error }}]</span>
+                            {% endfor %}
+                            <br><br>
+                        </p>
+
+                        <p>
+                            {{ form.password2.label(class="label") }}
+                            {{ form.password2(class="input is-warning") }}
+                            {% for error in form.password2.errors %}
+                            <span style="color:brown">[{{ error }}]</span>
+                            {% endfor %}
+                            <br><br>
+                        </p>
+
+                        <p>{{ form.submit(class="button is-warning") }}</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

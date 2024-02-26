@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="section">
+        <h1 class="title">Ciao {{ current_user.username }}</h1>
+        <p class="subtitle">seleziona il tuo pg</p>
+    </section>
+    <div class="section">
+        <div class="container">
+            <div class="column is-centered">
+                <div class="columns is-multiline">
+                    {% for character in characters %}
+                        <div class="column is-one-third">
+                            <div class="box p-0">
+                            {% if character.active %}
+                                <div class="message is-success">
+                            {% else %}
+                                <div class="message">
+                            {% endif %}
+                                    <div class="message-header">
+                                        {{ character.name }}
+                                        <form action="{{ url_for('delete', id=character.id) }}" method="post">
+                                            {{ form.hidden_tag() }}
+                                            <button class="delete" aria-label="delete"></button>
+
+                                        </form>
+                                    </div>
+                                    <div class="message-body has-text-centered">
+                                        {% if character.master %}
+                                            È il master del gruppo <strong>{{ character.group }}</strong>
+                                        {% else %}
+                                        Sta viaggiando con il gruppo <strong>{{ character.group }}</strong>
+                                        {% endif %}
+                                        <br><br>
+                                        <div class="columns is-mobile">
+                                            {% if not character.active %}
+                                                <div class="column is-one-third">
+                                                    <form action="{{ url_for('activate', id=character.id) }}" method="post">
+                                                        {{ form.hidden_tag() }}
+                                                        {{ form.submit(value="Attiva", class="button is-dark") }}
+                                                    </form>
+                                                </div>
+
+                                                <div class ="column is-two-thirds">
+                                                    <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons">
+                                                        <div class="control">
+                                                            {{ form.hidden_tag() }}
+                                                            {{ form.group(class="input is-dark", placeholder="Nome Gruppo") }}
+                                                        </div>
+                                                        <div class="control">
+                                                            {{ form.submit(class="button is-dark", value="Cambia") }}
+                                                        </div>
+                                                    </form>
+                                                </div>
+
+                                            {% else %}
+                                                <div class="column is-one-third">
+                                                </div>
+
+                                                <div class ="column is-two-thirds">
+                                                    <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons">
+                                                        <div class="control">
+                                                            {{ form.hidden_tag() }}
+                                                            {{ form.group(class="input is-success", placeholder="Nome Gruppo") }}
+                                                        </div>
+                                                        <div class="control">
+                                                            {{ form.submit(class="button is-success", value="Cambia") }}
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <h3>Nessun personaggio ancora creato</h3>
+                    {% endfor %}
+                    <br>
+                </div>
+            </div>
+                <br>
+            <div class="column is-centered">
+                <div class="column is-one-third">
+                    <form action="" method="post" class="box">
+                        <h2 class="title">aggiungi personaggio</h2>
+                    {{ form.hidden_tag() }}
+                    <div class="field is-warning">
+                        {{ form.name.label(class="label") }}
+                        {{ form.name(class="input is-warning") }}
+                        {% for error in form.name.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <div class="field is-warning">
+                        {{ form.group.label(class="label") }}
+                        {{ form.group(class="input is-warning") }}
+                        {% for error in form.group.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                    <p>
+                    {{ form.master.label(class="checkbox") }}
+                    {{ form.master }}
+                    </p>
+                            <br>
+                    <p>{{ form.submit(class="button is-warning") }}</p>
+                </div>
+                </div>
+        </div>
+    </div>
+
+
+    
+{% endblock %}

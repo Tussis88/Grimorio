@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html class="has-background-light">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% if title %}
+        <title>{{ title }} | Grimorio</title>
+        {% else %}
+        <title>Benvenuti nel Grimorio</title>
+        {% endif %}
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <body>
+        <nav class="navbar has-shadow is-white" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <div class="navbar-item">
+                    <p class= "title">Grimorio</p>
+                </div>
+                <a role="button" class="navbar-burger has-shadow is-white" aria-label="menu" aria-expanded="false" data-target="MenuBasic">
+                      <span aria-hidden="true"></span>
+                      <span aria-hidden="true"></span>
+                      <span aria-hidden="true"></span>
+                </a>
+            </div>
+            <div id="MenuBasic" class ="navbar-menu">
+                {% if current_user.is_anonymous %}
+                    <div class = "navbar-start">
+                        <a class="navbar-item" href="{{ url_for('login') }}">Accedi</a>
+                    </div>
+                {% else %}
+                    <div class="navbar-start">
+                        <a class="navbar-item" href="{{ url_for('index') }}">Home</a>
+                    {% if active_char.master == True %}
+                        <a class="navbar-item" href="{{ url_for('master', group_name = active_char.group) }}">Master</a>
+                    {% else %}
+                        <a class="navbar-item" href="{{ url_for('incantesimi', char_name = active_char.name) }}">Incantesimi</a>
+                    {% endif %}
+                    </div>
+                <div class="navbar-end">
+                    <a class="navbar-item" href="{{ url_for('logout') }}">Disconnetti</a>
+                </div>
+                {% endif %}
+            </div>
+        </nav>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="notification is-danger is-light">
+                <ul>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+    </body>
+</html>

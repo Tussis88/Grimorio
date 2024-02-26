@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="section">
+        <h1 class="title">Grimorio di {{ character.name }}</h1>
+        {% if current_user.id == character.user_id %}
+            <input type="checkbox" id="toggleHide"> <label for="toggleHide">Modifica Lista</label>
+            <section class="hidden">
+                <div class="container">
+                    <div class="column is-centered">
+                        <div class="column"> 
+                            <form action="" method="post" class="box">
+                            {{ form.hidden_tag() }}
+                                <p>
+                                    {{ form.name.label(class="label") }}
+                                    {{ form.name(class="input is-warning") }}
+                                    <br><br>
+                                </p>
+                                <p>
+                                    {{ form.level.label(class="label") }}
+                                    <div class="columns is-mobile">
+                                        <div class="column"> 
+                                    {{ form.level(class="input is-warning") }}
+                                        </div>
+                                        <div class="column"> 
+                                    {{ form.submit(class="button is-warning") }}
+                                        </div>
+                                    </div>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        {% endif %}
+    </div>
+    <br>
+    <br>
+    <div class="columns is-multiline is-desktop is-centered">
+    {% for i in range(1, 10) %}
+        {% set ns = namespace(first_time=true) %}
+        <div class="column is-one-third">
+            <table class="table is-fullwidth is-striped is-bordered">
+                {% for spell in spells %}
+                    {% if spell.level == i %}
+                        {% if ns.first_time == true %}
+                            <tr class="has-background-warning">
+                                <th style="width:40px;" class="has-text-grey-dark">--</th>
+                                <th class="has-text-centered has-text-grey-dark">Livello {{ i }}</th>
+                                <th style="width:40px;" class="has-text-grey-dark">n.</th>
+                                <th style="width:40px;" class="has-text-grey-dark hidden">-</th>
+                            </tr>
+                            {% set ns.first_time = false %}
+                        {% endif %}
+                        <tr {% if spell.prepared == 0 %}style="color: Grey; background-color:LightGrey"{% endif %}>
+                            <td>
+
+                                {% if current_user.id == character.user_id %}
+                                    <form action="{{ url_for('subtract_prepared', id=spell.id) }}" method="post">
+                                        {{ form.hidden_tag() }}
+                                        {{ form.submit(value="-", class="subtract") }}
+                                    </form>
+                                 {% else %}
+                                    --
+                                {% endif %}
+                            </td>
+                            <td>{{ spell.name }}</td>
+                            <td>
+                                {% if current_user.id == character.user_id %}
+                                    <form action="{{ url_for('add_prepared', id=spell.id) }}" method="post">
+                                        {{ form.hidden_tag() }}
+                                        {{ form.submit(value=spell.prepared, class="adder") }}
+                                    </form>
+                                {% else %}
+                                     {{ spell.prepared }}
+                                {% endif %}
+                            </td>
+                            <td class="hidden">
+                                <form action="{{ url_for('delete_prepared', id=spell.id) }}" method="post"> 
+                                    {{ form.hidden_tag() }}
+                                    {{ form.submit(value="x", style="color: red;", class="subtract") }}
+                                </form>
+                            </td>
+
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+        <br>
+    {% endfor %}
+    </div>
+
+    {% endblock %}

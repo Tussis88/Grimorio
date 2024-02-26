@@ -1,0 +1,32 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+
+:root {
+    --verde: #46b29e;
+    --rosso: #c15757;
+}
+
+.hidden {
+    display: none;
+}
+
+.adder, .subtract {
+    text-align: center;
+    font-size: medium;
+    font-weight: normal;
+    transition: 1s 0.2s;
+    background-color: transparent;
+    border: none;
+    border-radius: 20%;
+}
+
+.adder:active {
+    color: lightgray;
+    background-color: var(--verde);
+    transition: 0s;
+}
+ 
+.subtract:active {
+    color: lightgray;
+    background-color: var(--rosso);
+    transition: 0s;
+}
