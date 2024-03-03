@@ -38,7 +38,9 @@ class Character(db.Model):
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
 
     players: so.Mapped[User] = so.relationship(back_populates="chars")
-    spells: so.WriteOnlyMapped["Spell"] = so.relationship(back_populates="spell_chars", passive_deletes=True)
+    spells: so.WriteOnlyMapped["Spell"] = so.relationship(
+        back_populates="spell_chars", passive_deletes=True
+    )
 
     def __repr__(self):
         return "<Character: {}, group: {}, master: {}, active: {}>".format(

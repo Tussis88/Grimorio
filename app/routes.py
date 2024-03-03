@@ -1,4 +1,8 @@
 import sqlalchemy as sa
+from flask import render_template, flash, redirect, url_for, request, session
+from flask_login import current_user, login_user, logout_user, login_required
+from urllib.parse import urlsplit
+
 from app import app, db
 from app.forms import (
     LoginForm,
@@ -8,12 +12,8 @@ from app.forms import (
     SpellCreationForm,
     GroupChangeForm,
 )
+from app.helpers import active_char_setter
 from app.models import User, Character, Spell
-from flask import render_template, flash, redirect, url_for, request
-from flask_login import current_user, login_user, logout_user, login_required
-from urllib.parse import urlsplit
-
-from app.helpers import active_finder
 
 
 @app.route("/")
@@ -24,6 +24,7 @@ def index():
     characters = db.session.scalars(
         sa.select(Character).where(Character.players == current_user)
     )
+    active_char_setter()
     if form.validate_on_submit():
         for character in characters:
             character.active = False
@@ -38,17 +39,11 @@ def index():
         db.session.commit()
         return redirect(url_for("index"))
 
-    characters = db.session.scalars(
-        sa.select(Character).where(Character.players == current_user)
-    )
-    active_char = active_finder()
-
     return render_template(
         "index.html",
         title="Home",
         characters=characters,
         form=form,
-        active_char=active_char,
     )
 
 
@@ -72,8 +67,10 @@ def login():
         # urlsplit().netloc verifica se l'utente arriva da un sito esterno.
         if not next_page or urlsplit(next_page).netloc != "":
             next_page = url_for("index")
+        active_char_setter()
+        print("prova")
         return redirect(next_page)
-    return render_template("login.html", title="Accedi", active_char="empty", form=form)
+    return render_template("login.html", title="Accedi", form=form)
 
 
 @app.route("/logout")
@@ -102,7 +99,6 @@ def register():
 @login_required
 def incantesimi(char_name):
     character = db.first_or_404(sa.select(Character).where(Character.name == char_name))
-    active_char = active_finder()
     form = SpellCreationForm()
     if form.validate_on_submit():
         new_spell = Spell(
@@ -112,7 +108,9 @@ def incantesimi(char_name):
         )
         db.session.add(new_spell)
         db.session.commit()
-        return redirect(url_for("incantesimi", char_name=active_char.name))
+        return redirect(
+            url_for("incantesimi", char_name=char_name)
+        )
 
     spells = db.session.scalars(
         sa.select(Spell)
@@ -122,7 +120,6 @@ def incantesimi(char_name):
     return render_template(
         "incantesimi.html",
         title=" Incantesimi Preparati",
-        active_char=active_char,
         spells=spells,
         character=character,
         form=form,
@@ -132,21 +129,19 @@ def incantesimi(char_name):
 @app.route("/master/<group_name>")
 @login_required
 def master(group_name):
-    active_char = active_finder()
     members = db.session.scalars(
         sa.select(Character)
         .where(Character.group == group_name)
-        .where(Character.master == False)
+        .where(Character.name != session["active_char"]["name"])
     )
     return render_template(
         "master.html",
-        active_char=active_char,
         title="La Pagina del Master",
         members=members,
     )
 
 
-@app.route("/activate/<id>", methods=["POST"])
+@app.post("/activate/<id>")
 @login_required
 def activate(id):
     form = EmptyForm()
@@ -163,7 +158,7 @@ def activate(id):
     return redirect(url_for("index"))
 
 
-@app.route("/change_group/<id>", methods=["POST"])
+@app.post("/change_group/<id>")
 @login_required
 def change_group(id):
     form = GroupChangeForm()
@@ -174,8 +169,7 @@ def change_group(id):
     return redirect(url_for("index"))
 
 
-
-@app.route("/delete/<id>", methods=["POST"])
+@app.post("/delete/<id>")
 @login_required
 def delete(id):
     form = EmptyForm()
@@ -191,41 +185,42 @@ def delete(id):
     return redirect(url_for("index"))
 
 
-@app.route("/add_prepared/<id>", methods=["POST"])
+@app.post("/add_prepared/<id>")
 @login_required
 def add_prepared(id):
     form = EmptyForm()
     if form.validate_on_submit():
         spell = db.session.scalar(sa.select(Spell).where(Spell.id == id))
-        spell.prepared = spell.prepared + 1
-        db.session.commit()
+        if spell:
+            spell.prepared = spell.prepared + 1
+            db.session.commit()
+    char_name = spell.spell_chars.name
 
-    active_char = active_finder()
-    return redirect(url_for("incantesimi", char_name=active_char.name))
+    return redirect(url_for("incantesimi", char_name=char_name))
 
 
-@app.route("/subtract_prepared/<id>", methods=["POST"])
+@app.post("/subtract_prepared/<id>")
 @login_required
 def subtract_prepared(id):
     form = EmptyForm()
     if form.validate_on_submit():
         spell = db.session.scalar(sa.select(Spell).where(Spell.id == id))
-        if spell.prepared > 0:
-            spell.prepared = spell.prepared - 1
-            db.session.commit()
+        if spell:
+            if spell.prepared > 0:
+                spell.prepared = spell.prepared - 1
+                db.session.commit()
 
-    active_char = active_finder()
-    return redirect(url_for("incantesimi", char_name=active_char.name))
+    char_name = spell.spell_chars.name
+    return redirect(url_for("incantesimi", char_name=char_name))
 
 
-@app.route("/delete_prepared/<id>", methods=["POST"])
+@app.post("/delete_prepared/<id>")
 @login_required
 def delete_prepared(id):
     form = EmptyForm()
     if form.validate_on_submit():
         spell = db.session.scalar(sa.select(Spell).where(Spell.id == id))
+        char_name = spell.spell_chars.name
         db.session.delete(spell)
         db.session.commit()
-
-    active_char = active_finder()
-    return redirect(url_for("incantesimi", char_name=active_char.name))
+    return redirect(url_for("incantesimi", char_name=char_name))
