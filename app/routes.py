@@ -1,7 +1,7 @@
+from urllib.parse import urlsplit
 import sqlalchemy as sa
 from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required
-from urllib.parse import urlsplit
 
 from app import app, db
 from app.forms import (
