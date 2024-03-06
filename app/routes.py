@@ -21,6 +21,7 @@ from app.models import User, Character, Spell
 @login_required
 def index():
     form = CharacterCreationForm()
+    form2 = GroupChangeForm()
     characters = db.session.scalars(
         sa.select(Character).where(Character.players == current_user)
     )
@@ -44,6 +45,7 @@ def index():
         title="Home",
         characters=characters,
         form=form,
+        form2=form2,
     )
 
 
@@ -164,7 +166,7 @@ def change_group(id):
     form = GroupChangeForm()
     if form.validate_on_submit():
         character = db.session.scalar(sa.select(Character).where(Character.id == id))
-        character.group = form.group.data.capitalize()
+        character.group = form.group_c.data.capitalize()
         db.session.commit()
     return redirect(url_for("index"))
 

@@ -38,7 +38,7 @@ class CharacterCreationForm(FlaskForm):
 
     def validate_name(self, name):
         char_name = db.session.scalar(
-            sa.select(Character).where(Character.name == name.data)
+            sa.select(Character).where(Character.name == name.data.strip().capitalize())
         )
         if char_name is not None:
             raise ValidationError("Nome Personaggio già in uso")
@@ -51,8 +51,8 @@ class SpellCreationForm(FlaskForm):
 
 
 class GroupChangeForm(FlaskForm):
-    group = StringField("Nome Gruppo", validators=[DataRequired()])
-    submit = SubmitField("Cambia Gruppo")
+    group_c = StringField("Nome Gruppo", validators=[DataRequired()])
+    submit = SubmitField("Cambia")
 
 
 class EmptyForm(FlaskForm):

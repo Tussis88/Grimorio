@@ -44,11 +44,11 @@
                                                 <div class ="column is-two-thirds">
                                                     <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons">
                                                         <div class="control">
-                                                            {{ form.hidden_tag() }}
-                                                            {{ form.group(class="input is-dark", placeholder="Nome Gruppo") }}
+                                                            {{ form2.hidden_tag() }}
+                                                            {{ form2.group_c(class="input is-dark", placeholder="Nome Gruppo") }}
                                                         </div>
                                                         <div class="control">
-                                                            {{ form.submit(class="button is-dark", value="Cambia") }}
+                                                            {{ form2.submit(class="button is-dark") }}
                                                         </div>
                                                     </form>
                                                 </div>
@@ -60,11 +60,11 @@
                                                 <div class ="column is-two-thirds">
                                                     <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons">
                                                         <div class="control">
-                                                            {{ form.hidden_tag() }}
-                                                            {{ form.group(class="input is-success", placeholder="Nome Gruppo") }}
+                                                            {{ form2.hidden_tag() }}
+                                                            {{ form2.group_c(class="input is-success", placeholder="Nome Gruppo") }}
                                                         </div>
                                                         <div class="control">
-                                                            {{ form.submit(class="button is-success", value="Cambia") }}
+                                                            {{ form2.submit(class="button is-success") }}
                                                         </div>
                                                     </form>
                                                 </div>
