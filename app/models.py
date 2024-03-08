@@ -35,6 +35,8 @@ class Character(db.Model):
     plane: so.Mapped[Optional[str]] = so.mapped_column(sa.String(64), index=True)
     master: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
+    editable: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean, default=True)
+    hidden: so.Mapped[Optional[bool]] = so.mapped_column(sa.Boolean, default=False)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
 
     players: so.Mapped[User] = so.relationship(back_populates="chars")
