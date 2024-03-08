@@ -1,5 +1,5 @@
 window.onload = function() {
-    var toggleHide = document.getElementById("toggleHide");
+    // var toggleHide = document.getElementById("toggleHide");
     
     // salva la scroll position ogni volta che la pagina viene scrollata
     function handleScroll() {
@@ -8,19 +8,19 @@ window.onload = function() {
     }
     window.addEventListener("scroll", handleScroll);
 
-    toggleHide.addEventListener("change", function() {
-        var hiddenElements = document.querySelectorAll(".hidden");
-
-        for (var i = 0; i < hiddenElements.length; i++) {
-            if (!toggleHide.checked) {
-                hiddenElements[i].style.display = "none";
-            } else {
-                hiddenElements[i].style.display = "table-cell";
-            }
-        }
+    // toggleHide.addEventListener("change", function() {
+    //     var hiddenElements = document.querySelectorAll(".hidden");
+    //
+    //     for (var i = 0; i < hiddenElements.length; i++) {
+    //         if (!toggleHide.checked) {
+    //             hiddenElements[i].style.display = "none";
+    //         } else {
+    //             hiddenElements[i].style.display = "table-cell";
+    //         }
+    //     }
         // salva lo stato nel localStorage
-        localStorage.setItem("toggleHideState", toggleHide.checked);
-    });
+        // localStorage.setItem("toggleHideState", toggleHide.checked);
+    // });
 
     // carica lo stato del checkbox dallo storage
     var savedState = localStorage.getItem("toggleHideState");

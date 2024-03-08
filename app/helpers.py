@@ -5,14 +5,16 @@ from app import db
 from app.models import Character
 
 
-def active_char_setter():
+def active_char_setter() -> None:
     """Trova e aggiorna i dati nella sessione relativi al personaggio attivo"""
     char_dict = {
         "id": "0",
         "name": "gigiris",
-        "group": "empty",
+        "group": "Cazzovuoi",
         "active": False,
         "master": False,
+        "editable": False,
+        "hidden": False,
         "user_id": "0",
     }
     if current_user:
@@ -27,6 +29,8 @@ def active_char_setter():
                 "name": active_char.name,
                 "group": active_char.group,
                 "active": active_char.active,
+                "editable": active_char.editable,
+                "hidden": active_char.hidden,
                 "master": active_char.master,
                 "user_id": active_char.user_id,
             }

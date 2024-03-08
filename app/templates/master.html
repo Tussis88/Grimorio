@@ -9,7 +9,21 @@
                     <ul>
                         {% for member in members %}
                             <li>
-                            <a href="{{ url_for('incantesimi', char_name = member.name) }}" class="tag is-warning is-medium">{{ member.name }}</a>
+                            <a href="{{ url_for('incantesimi', char_name = member.name) }}" class="is-size-3 has-text-dark">{{ member.name }}</a>
+                            <p> 
+                                {{ member.players.username }}
+                                {% if member.master %}
+                                    - MASTER
+                                {% endif %}
+                            </p>
+                            <form action="{{ url_for('editable_state', id=member.id) }}" method="post">
+                                {{ form.hidden_tag() }}
+                                {% if member.editable == True %}
+                                    {{ form.submit(value="sbloccato", class="button is-success") }}
+                                {% else %}
+                                    {{ form.submit(value="bloccato", class="button is-danger") }}
+                                {% endif %}
+                            </form>
                             <br><br>
                             </li>
                         {% endfor %}

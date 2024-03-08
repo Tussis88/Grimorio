@@ -110,27 +110,40 @@ def incantesimi(char_name):
         )
         db.session.add(new_spell)
         db.session.commit()
-        return redirect(
-            url_for("incantesimi", char_name=char_name)
-        )
+        return redirect(url_for("incantesimi", char_name=char_name))
 
     spells = db.session.scalars(
         sa.select(Spell)
         .where(Spell.spell_chars == character)
         .order_by(Spell.level, Spell.name)
     ).all()
-    return render_template(
-        "incantesimi.html",
-        title=" Incantesimi Preparati",
-        spells=spells,
-        character=character,
-        form=form,
+    is_current_editable = character.editable and character.user_id == current_user.id
+    current_master = (
+        session["active_char"]["master"]
+        and session["active_char"]["group"] == character.group
     )
+
+    if is_current_editable or (not character.editable and current_master):
+        return render_template(
+            "editabili.html",
+            title="Modifica Incantesimi",
+            spells=spells,
+            character=character,
+            form=form,
+        )
+    else:
+        return render_template(
+            "visibili.html",
+            title="Incantesimi Preparati",
+            spells=spells,
+            character=character,
+        )
 
 
 @app.route("/master/<group_name>")
 @login_required
 def master(group_name):
+    form = EmptyForm()
     members = db.session.scalars(
         sa.select(Character)
         .where(Character.group == group_name)
@@ -140,6 +153,7 @@ def master(group_name):
         "master.html",
         title="La Pagina del Master",
         members=members,
+        form=form,
     )
 
 
@@ -158,6 +172,22 @@ def activate(id):
         new_active.active = True
         db.session.commit()
     return redirect(url_for("index"))
+
+
+@app.post("/editable_state/<id>")
+@login_required
+def editable_state(id):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        char = db.session.scalar(sa.select(Character).where(Character.id == id))
+        if char:
+            if char.editable:
+                char.editable = False
+            else:
+                char.editable = True
+            db.session.commit()
+            return redirect(url_for("master", group_name=char.group))
+    return redirect("index")
 
 
 @app.post("/change_group/<id>")
