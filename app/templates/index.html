@@ -44,6 +44,14 @@
                                                         {{ form.hidden_tag() }}
                                                         {{ form.submit(value="Attiva", class="button is-dark") }}
                                                     </form>
+                                                    <form action="{{ url_for('hidden_state', id=character.id) }}" method="post">
+                                                        {{ form.hidden_tag() }}
+                                                        {% if character.hidden %}
+                                                            {{ form.submit(value="mostra", class="button is-dark") }}
+                                                        {% else %}
+                                                            {{ form.submit(value="nascondi", class="button is-dark") }}
+                                                        {% endif %} 
+                                                    </form>
                                                 </div>
 
                                                 <div class ="column is-two-thirds">
@@ -60,6 +68,15 @@
 
                                             {% else %}
                                                 <div class="column is-one-third">
+                                                <br><br><br>
+                                                    <form action="{{ url_for('hidden_state', id=character.id) }}" method="post">
+                                                        {{ form.hidden_tag() }}
+                                                        {% if character.hidden %}
+                                                            {{ form.submit(value="mostra", class="button is-success") }}
+                                                        {% else %}
+                                                            {{ form.submit(value="nascondi", class="button is-success") }}
+                                                        {% endif %} 
+                                                    </form>
                                                 </div>
 
                                                 <div class ="column is-two-thirds">

@@ -1,7 +1,9 @@
+from operator import truediv
 from urllib.parse import urlsplit
 import sqlalchemy as sa
 from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required
+from wtforms.validators import url
 
 from app import app, db
 from app.forms import (
@@ -131,6 +133,12 @@ def incantesimi(char_name):
             character=character,
             form=form,
         )
+    elif character.hidden and (not (character.user_id == current_user.id) or not current_master):
+        return render_template(
+            "metapod.html",
+            title="Metapod",
+            character=character,
+        )
     else:
         return render_template(
             "visibili.html",
@@ -187,7 +195,22 @@ def editable_state(id):
                 char.editable = True
             db.session.commit()
             return redirect(url_for("master", group_name=char.group))
-    return redirect("index")
+    return redirect(url_for("index"))
+
+
+@app.post("/hidden_state/<id>")
+@login_required
+def hidden_state(id):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        char = db.session.scalar(sa.select(Character).where(Character.id == id))
+        if char:
+            if char.hidden:
+                char.hidden = False
+            else:
+                char.hidden = True
+            db.session.commit()
+    return redirect(url_for("index"))
 
 
 @app.post("/change_group/<id>")

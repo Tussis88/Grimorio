@@ -32,10 +32,9 @@
                 {% else %}
                     <div class="navbar-start">
                         <a class="navbar-item" href="{{ url_for('index') }}">Home</a>
+                        <a class="navbar-item" href="{{ url_for('incantesimi', char_name = session.active_char.name) }}">Incantesimi</a>
                     {% if session.active_char.master == True %}
                         <a class="navbar-item" href="{{ url_for('master', group_name = session.active_char.group) }}">Master</a>
-                    {% else %}
-                        <a class="navbar-item" href="{{ url_for('incantesimi', char_name = session.active_char.name) }}">Incantesimi</a>
                     {% endif %}
                     </div>
                 <div class="navbar-end">
