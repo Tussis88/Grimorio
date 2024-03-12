@@ -1,8 +1,19 @@
 {% extends "base.html" %} 
 
 {% block content %} 
-<h1 class="title">
-    L'utente {{ character.name }} ha reso la propria lista nascosta.
-</h1>
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-half">
+                <div class="block mt-6">
+                    <h1 class="title has-text-centered">
+                        La lista di {{ character.name }} è nascosta.
+                    </h1>
+                    <figure>
+                        <img src="{{ url_for('static', filename='images/metapod.png') }}">
+                    </figure>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

@@ -1,9 +1,7 @@
-from operator import truediv
 from urllib.parse import urlsplit
 import sqlalchemy as sa
 from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user, login_required
-from wtforms.validators import url
 
 from app import app, db
 from app.forms import (
@@ -133,19 +131,26 @@ def incantesimi(char_name):
             character=character,
             form=form,
         )
-    elif character.hidden and (not (character.user_id == current_user.id) or not current_master):
-        return render_template(
-            "metapod.html",
-            title="Metapod",
-            character=character,
-        )
-    else:
+    elif (character.editable and current_master) or (character.user_id == current_user.id and not character.editable) or not character.hidden:
         return render_template(
             "visibili.html",
             title="Incantesimi Preparati",
             spells=spells,
             character=character,
         )
+    else:
+        return render_template(
+            "metapod.html",
+            title="Metapod",
+            character=character,
+        )
+    # else:
+    #     return render_template(
+    #         "visibili.html",
+    #         title="Incantesimi Preparati",
+    #         spells=spells,
+    #         character=character,
+    #     )
 
 
 @app.route("/master/<group_name>")

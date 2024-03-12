@@ -39,11 +39,14 @@
                                         <br><br>
                                         <div class="columns is-mobile">
                                             {% if not character.active %}
-                                                <div class="column is-one-third">
+                                                <div class="column is-one-third" style="text-align: left;">
                                                     <form action="{{ url_for('activate', id=character.id) }}" method="post">
                                                         {{ form.hidden_tag() }}
                                                         {{ form.submit(value="Attiva", class="button is-dark") }}
                                                     </form>
+                                                </div>
+
+                                                <div class ="column is-two-thirds" style="text-align: right;">
                                                     <form action="{{ url_for('hidden_state', id=character.id) }}" method="post">
                                                         {{ form.hidden_tag() }}
                                                         {% if character.hidden %}
@@ -52,10 +55,7 @@
                                                             {{ form.submit(value="nascondi", class="button is-dark") }}
                                                         {% endif %} 
                                                     </form>
-                                                </div>
-
-                                                <div class ="column is-two-thirds">
-                                                    <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons">
+                                                    <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons mt-4">
                                                         <div class="control">
                                                             {{ form2.hidden_tag() }}
                                                             {{ form2.group_c(class="input is-dark", placeholder="Nome Gruppo") }}
@@ -68,7 +68,11 @@
 
                                             {% else %}
                                                 <div class="column is-one-third">
-                                                <br><br><br>
+                                                    <br><br>
+                                                    
+                                                </div>
+
+                                                <div class ="column is-two-thirds" style="text-align: right;">
                                                     <form action="{{ url_for('hidden_state', id=character.id) }}" method="post">
                                                         {{ form.hidden_tag() }}
                                                         {% if character.hidden %}
@@ -77,10 +81,7 @@
                                                             {{ form.submit(value="nascondi", class="button is-success") }}
                                                         {% endif %} 
                                                     </form>
-                                                </div>
-
-                                                <div class ="column is-two-thirds">
-                                                    <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons">
+                                                    <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons mt-4">
                                                         <div class="control">
                                                             {{ form2.hidden_tag() }}
                                                             {{ form2.group_c(class="input is-success", placeholder="Nome Gruppo") }}
