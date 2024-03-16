@@ -37,8 +37,8 @@
                                         <br> Lista <strong>Bloccata</strong> dal Master
                                         {% endif %}
                                         <br><br>
-                                        <div class="columns is-mobile">
                                             {% if not character.active %}
+                                            <div class="columns is-mobile">
                                                 <div class="column is-one-third" style="text-align: left;">
                                                     <form action="{{ url_for('activate', id=character.id) }}" method="post">
                                                         {{ form.hidden_tag() }}
@@ -55,6 +55,9 @@
                                                             {{ form.submit(value="nascondi", class="button is-dark") }}
                                                         {% endif %} 
                                                     </form>
+                                                </div>
+                                            </div>
+
                                                     <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons mt-4">
                                                         <div class="control">
                                                             {{ form2.hidden_tag() }}
@@ -64,9 +67,10 @@
                                                             {{ form2.submit(class="button is-dark") }}
                                                         </div>
                                                     </form>
-                                                </div>
+
 
                                             {% else %}
+                                            <div class="columns is-mobile">
                                                 <div class="column is-one-third">
                                                     <br><br>
                                                     
@@ -81,6 +85,8 @@
                                                             {{ form.submit(value="nascondi", class="button is-success") }}
                                                         {% endif %} 
                                                     </form>
+                                                </div>
+                                            </div>
                                                     <form action="{{ url_for('change_group', id=character.id) }}" method="post" class= "field has-addons mt-4">
                                                         <div class="control">
                                                             {{ form2.hidden_tag() }}
@@ -90,9 +96,7 @@
                                                             {{ form2.submit(class="button is-success") }}
                                                         </div>
                                                     </form>
-                                                </div>
                                             {% endif %}
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -106,7 +110,7 @@
                 <br>
             <div class="column is-centered">
                 <div class="column is-one-third">
-                    <form action="" method="post" class="box">
+                        <form action="{{ url_for('index') }}" method="post" class="box">
                         <h2 class="title">aggiungi personaggio</h2>
                     {{ form.hidden_tag() }}
                     <div class="field is-warning">
